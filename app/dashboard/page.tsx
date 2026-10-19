@@ -1,0 +1,10 @@
+import Link from "next/link";
+import { BookOpen, CreditCard, GraduationCap, LayoutDashboard, Megaphone, ReceiptText, Users } from "lucide-react";
+
+const cards=[
+ {title:"Students",value:"Student records",note:"Admissions, classes and parent links",icon:Users},
+ {title:"Academics",value:"2026 / 2027",note:"Subjects, attendance and results",icon:BookOpen},
+ {title:"School Fees",value:"Invoices & balances",note:"Track paid, partial and outstanding fees",icon:CreditCard},
+ {title:"Receipts",value:"Verified payments",note:"Gateway-confirmed transaction records",icon:ReceiptText}
+];
+export default function Dashboard(){return <main className="dash"><aside className="dashSide"><Link href="/" className="brand inverse"><span className="crest">BHA</span><span>BEST HOME ACADEMY<small>MANAGEMENT PORTAL</small></span></Link><nav><a className="active"><LayoutDashboard size={18}/>Overview</a><a><Users size={18}/>People</a><a><GraduationCap size={18}/>Academics</a><a><CreditCard size={18}/>Finance</a><a><Megaphone size={18}/>Announcements</a></nav><small>16 Umana Ndon, Eket<br/>Akwa Ibom State, Nigeria</small></aside><section className="dashMain"><header><div><p className="eyebrow">BHA COMMAND CENTER</p><h1>School overview</h1></div><span className="roleBadge">ROLE-AWARE ACCESS</span></header><div className="dashNotice"><b>Secure operations foundation</b><span>Live data appears here after Supabase authentication and the production database are connected.</span></div><div className="dashCards">{cards.map(({title,value,note,icon:Icon})=><article key={title}><Icon/><small>{title}</small><h2>{value}</h2><p>{note}</p></article>)}</div><section className="dashPanel"><div><h2>Financial integrity first.</h2><p>BHA payment records are designed around server-verified gateway transactions. Client-side success screens will never be sufficient to credit a student account.</p></div><div className="statusStack"><span><b>Payment verification</b><em>Server-side</em></span><span><b>Parent-child access</b><em>Restricted</em></span><span><b>Financial changes</b><em>Auditable</em></span></div></section></section></main>}
