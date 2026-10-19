@@ -1,0 +1,7 @@
+import 'server-only';
+import crypto from 'crypto';
+const base='https://api.paystack.co';
+function secret(){const key=process.env.PAYSTACK_SECRET_KEY;if(!key)throw new Error('PAYSTACK_SECRET_KEY is not configured.');return key;}
+export async function initializePaystack(email:string,amountKobo:number,reference:string,callbackUrl:string,metadata:Record<string,unknown>){const res=await fetch(`${base}/transaction/initialize`,{method:'POST',headers:{Authorization:`Bearer ${secret()}`,'Content-Type':'application/json'},body:JSON.stringify({email,amount:amountKobo,reference,callback_url:callbackUrl,metadata}),cache:'no-store'});const json=await res.json();if(!res.ok||!json.status)throw new Error(json.message||'Unable to initialize payment.');return json.data as {authorization_url:string;access_code:string;reference:string};}
+export async function verifyPaystack(reference:string){const res=await fetch(`${base}/transaction/verify/${encodeURIComponent(reference)}`,{headers:{Authorization:`Bearer ${secret()}`},cache:'no-store'});const json=await res.json();if(!res.ok||!json.status)throw new Error(json.message||'Unable to verify payment.');return json.data;}
+export function validPaystackSignature(rawBody:string,signature:string|null){if(!signature)return false;const digest=crypto.createHmac('sha512',secret()).update(rawBody).digest('hex');try{return crypto.timingSafeEqual(Buffer.from(digest),Buffer.from(signature));}catch{return false;}}
