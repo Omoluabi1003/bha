@@ -3,33 +3,12 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { BookOpenCheck, CreditCard, GraduationCap, Users, BarChart3, Bell, CalendarDays, ReceiptText } from 'lucide-react';
 import './portal.css';
-
 type Role='proprietor'|'admin'|'teacher'|'parent'|'student';
 const modules:Record<Role,{title:string;description:string;href:string;icon:any}[]>={
- proprietor:[
-  {title:'School overview',description:'Monitor enrolment, academics, fees and school activity.',href:'/portal',icon:BarChart3},
-  {title:'Fees & finance',description:'Review invoices, payments, balances and reconciliation.',href:'/portal/fees',icon:CreditCard},
-  {title:'Staff & students',description:'Oversee staff accounts, students and role access.',href:'/portal',icon:Users},
-  {title:'Academic performance',description:'Review CBT and academic performance trends.',href:'/cbt',icon:GraduationCap}],
- admin:[
-  {title:'Fees & finance',description:'Manage invoices, payments and receipts.',href:'/portal/fees',icon:CreditCard},
-  {title:'Student records',description:'Manage student information and enrolment operations.',href:'/portal',icon:Users},
-  {title:'Notices',description:'Publish Digital Campus notices.',href:'/portal',icon:Bell},
-  {title:'Academic calendar',description:'Coordinate school dates and events.',href:'/portal',icon:CalendarDays}],
- teacher:[
-  {title:'CBT workspace',description:'Manage approved practice and examination activities.',href:'/cbt',icon:BookOpenCheck},
-  {title:'Student progress',description:'Review learner performance and intervention needs.',href:'/portal',icon:BarChart3},
-  {title:'Attendance',description:'Access class attendance workflows.',href:'/portal',icon:Users},
-  {title:'Notices',description:'View staff and academic notices.',href:'/portal',icon:Bell}],
- parent:[
-  {title:'School fees',description:'View your child’s invoices, balances and payment history.',href:'/portal/fees',icon:CreditCard},
-  {title:'Receipts',description:'Access successful payment receipts.',href:'/portal/fees',icon:ReceiptText},
-  {title:'Academic progress',description:'Follow results, CBT progress and performance.',href:'/portal',icon:BarChart3},
-  {title:'School notices',description:'Stay informed about important school updates.',href:'/portal',icon:Bell}],
- student:[
-  {title:'CBT Practice Centre',description:'Enter JAMB, WAEC and NECO practice pathways.',href:'/cbt',icon:BookOpenCheck},
-  {title:'My results',description:'Review academic and CBT performance.',href:'/portal',icon:GraduationCap},
-  {title:'My fees',description:'View assigned invoices and payment status.',href:'/portal/fees',icon:CreditCard},
-  {title:'Notices',description:'Read school and academic announcements.',href:'/portal',icon:Bell}]
+ proprietor:[{title:'Account Management',description:'Manage Student, Parent and Staff access.',href:'/portal/accounts',icon:Users},{title:'Fees & finance',description:'Review invoices, payments, balances and reconciliation.',href:'/portal/fees',icon:CreditCard},{title:'Academic performance',description:'Review CBT and academic performance trends.',href:'/cbt',icon:GraduationCap},{title:'School overview',description:'Monitor enrolment and school activity.',href:'/portal',icon:BarChart3}],
+ admin:[{title:'Account Management',description:'Manage Student, Parent and Staff access.',href:'/portal/accounts',icon:Users},{title:'Fees & finance',description:'Manage invoices, payments and receipts.',href:'/portal/fees',icon:CreditCard},{title:'Notices',description:'Publish Digital Campus notices.',href:'/portal',icon:Bell},{title:'Academic calendar',description:'Coordinate school dates and events.',href:'/portal',icon:CalendarDays}],
+ teacher:[{title:'CBT workspace',description:'Manage approved practice and examination activities.',href:'/cbt',icon:BookOpenCheck},{title:'Student progress',description:'Review learner performance and intervention needs.',href:'/portal',icon:BarChart3},{title:'Attendance',description:'Access class attendance workflows.',href:'/portal',icon:Users},{title:'Notices',description:'View staff and academic notices.',href:'/portal',icon:Bell}],
+ parent:[{title:'School fees',description:'View your child’s invoices, balances and payment history.',href:'/portal/fees',icon:CreditCard},{title:'Receipts',description:'Access successful payment receipts.',href:'/portal/fees',icon:ReceiptText},{title:'Academic progress',description:'Follow results, CBT progress and performance.',href:'/portal',icon:BarChart3},{title:'School notices',description:'Stay informed about important school updates.',href:'/portal',icon:Bell}],
+ student:[{title:'CBT Practice Centre',description:'Enter JAMB, WAEC and NECO practice pathways.',href:'/cbt',icon:BookOpenCheck},{title:'My results',description:'Review academic and CBT performance.',href:'/portal',icon:GraduationCap},{title:'My fees',description:'View assigned invoices and payment status.',href:'/portal/fees',icon:CreditCard},{title:'Notices',description:'Read school and academic announcements.',href:'/portal',icon:Bell}]
 };
 export default async function Portal(){const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect('/login?next=/portal');const {data:profile}=await supabase.from('profiles').select('full_name,role').eq('id',user.id).single();const raw=(profile?.role||'student') as string;const role:Role=raw==='proprietor'?'proprietor':raw==='admin'?'admin':raw==='teacher'||raw==='staff'?'teacher':raw==='parent'?'parent':'student';const cards=modules[role];return <main className="portal"><header className="portalHeader"><div><span>BHA DIGITAL CAMPUS</span><h1>{profile?.full_name||'Welcome'}</h1><p>{role==='proprietor'?'Proprietor':role.charAt(0).toUpperCase()+role.slice(1)} Portal</p></div><Link href="/">Best Home Academy</Link></header><section className="portalIntro"><p>One secure workspace for the school services assigned to your account.</p></section><section className="portalGrid">{cards.map(({title,description,href,icon:Icon})=><Link href={href} className="portalCard" key={title}><Icon/><div><h2>{title}</h2><p>{description}</p><span>Open →</span></div></Link>)}</section></main>}
