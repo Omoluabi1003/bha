@@ -1,0 +1,1 @@
+export const CBT_SET_MODE='NUMBER_SELECTS_COMPLETE_QUESTION_SET' as const;
