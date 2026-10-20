@@ -1,0 +1,1 @@
+export function publishableNumberedSets(distinctApprovedQuestions:number,questionsPerSet:number){return Math.floor(distinctApprovedQuestions/questionsPerSet);}
