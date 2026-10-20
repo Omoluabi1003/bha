@@ -1,0 +1,1 @@
+export function geoAwareSetGate(setNumber:number,availableDistinct:number,questionsPerSet:number){return {setNumber,requiredTotal:setNumber*questionsPerSet,ready:availableDistinct>=setNumber*questionsPerSet};}
