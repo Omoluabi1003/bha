@@ -1,0 +1,35 @@
+/* Mobile-first corrections for the public BHA landing page. */
+@media (max-width: 620px) {
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  .wrap { width: calc(100% - 32px); max-width: 100%; }
+  .nav { height: 78px; min-width: 0; }
+  .brand { min-width: 0; gap: 10px; }
+  .brand img { flex: 0 0 auto; max-width: 58px; height: auto; object-fit: contain; }
+  .brand > span, .brand > div { min-width: 0; }
+  .brand b, .brand strong { font-size: clamp(16px, 5.2vw, 22px); line-height: 1.05; white-space: normal; }
+  .brand small { font-size: 8px; letter-spacing: .11em; }
+
+  .hero { overflow: hidden; }
+  .heroGrid { display: block; min-height: auto; padding: 64px 0 38px; }
+  .heroGrid > * { min-width: 0; max-width: 100%; }
+  .hero h1 { font-size: clamp(42px, 12vw, 56px); line-height: .98; letter-spacing: -.045em; margin: 24px 0 26px; overflow-wrap: anywhere; }
+  .lead, .sectionLead { font-size: 16px; line-height: 1.7; max-width: 100%; }
+  .eyebrow { font-size: 10px; line-height: 1.45; letter-spacing: .16em; }
+  .actions { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; margin-top: 28px; }
+  .actions .primary, .actions .secondary, .actions button, .actions a { width: 100%; min-width: 0; justify-content: center; text-align: center; white-space: normal; }
+  .location { margin: 22px 0 0; line-height: 1.5; }
+  .heroCard { margin-top: 34px; width: 100%; padding: 24px 20px; border-radius: 18px; overflow: hidden; }
+  .heroCard img { display: block; max-width: 100%; height: auto; object-fit: contain; margin-inline: auto; }
+  .miniStats { grid-template-columns: 1fr; gap: 0; }
+  .miniStats div { padding: 12px 0; border-bottom: 1px solid #e5dfd3; }
+
+  .section, .dark { overflow: hidden; }
+  .sectionTitle { overflow-wrap: anywhere; }
+  .trust > div, .subjects > div, .footerGrid > * { min-width: 0; }
+}
+
+@media (min-width: 621px) and (max-width: 900px) {
+  html, body { overflow-x: hidden; }
+  .actions { flex-wrap: wrap; }
+  .heroGrid > * { min-width: 0; }
+}
