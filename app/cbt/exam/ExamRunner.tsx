@@ -1,0 +1,15 @@
+'use client';
+import { useEffect,useMemo,useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+type Q={id:string;stem:string;options:string[]};
+export default function ExamRunner({attemptId,title,durationMinutes,questions,initialAnswers}:{attemptId:string;title:string;durationMinutes:number;questions:Q[];initialAnswers:Record<string,string>}){
+ const router=useRouter(); const [index,setIndex]=useState(0); const [answers,setAnswers]=useState<Record<string,string>>(initialAnswers); const [flagged,setFlagged]=useState<Record<string,boolean>>({}); const [left,setLeft]=useState(durationMinutes*60); const [saving,setSaving]=useState(false); const q=questions[index];
+ useEffect(()=>{const t=setInterval(()=>setLeft(v=>Math.max(0,v-1)),1000);return()=>clearInterval(t)},[]);
+ useEffect(()=>{if(left===0) submit()},[left]);
+ const answered=useMemo(()=>Object.keys(answers).length,[answers]);
+ async function choose(value:string){setAnswers(a=>({...a,[q.id]:value}));setSaving(true);await fetch('/api/cbt/answer',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({attemptId,questionId:q.id,selectedOption:value,flagged:!!flagged[q.id]})});setSaving(false)}
+ async function toggleFlag(){const next=!flagged[q.id];setFlagged(f=>({...f,[q.id]:next}));await fetch('/api/cbt/answer',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({attemptId,questionId:q.id,selectedOption:answers[q.id]||null,flagged:next})})}
+ async function submit(){const r=await fetch('/api/cbt/submit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({attemptId})});if(r.ok)router.replace(`/cbt/results/${attemptId}`)}
+ if(!q)return <main className="examShell"><h1>No questions are available for this examination.</h1></main>;
+ return <main className="examShell"><header className="examTop"><div><span>BHA DIGITAL CAMPUS</span><h1>{title}</h1></div><div className="timer">{String(Math.floor(left/60)).padStart(2,'0')}:{String(left%60).padStart(2,'0')}</div></header><div className="examMeta"><span>Question {index+1} of {questions.length}</span><span>{answered} answered</span><span>{saving?'Saving…':'Saved'}</span></div><section className="questionCard"><h2>{q.stem}</h2><div className="options">{q.options.map((o,i)=>{const key=String.fromCharCode(65+i);return <button key={key} onClick={()=>choose(key)} className={answers[q.id]===key?'selected':''}><b>{key}</b><span>{o}</span></button>})}</div><button className="flag" onClick={toggleFlag}>{flagged[q.id]?'Flagged for review':'Flag for review'}</button></section><nav className="questionNav">{questions.map((x,i)=><button key={x.id} onClick={()=>setIndex(i)} className={`${i===index?'current ':''}${answers[x.id]?'answered ':''}${flagged[x.id]?'flagged':''}`}>{i+1}</button>)}</nav><footer className="examActions"><button disabled={index===0} onClick={()=>setIndex(i=>i-1)}>Previous</button>{index<questions.length-1?<button onClick={()=>setIndex(i=>i+1)}>Next</button>:<button className="submit" onClick={submit}>Submit examination</button>}</footer></main>}
