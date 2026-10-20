@@ -1,0 +1,1 @@
+export function incompleteSetLockReason(setNumber:number,questionsPerSet:number){return `Set ${setNumber} remains locked until ${questionsPerSet} distinct approved questions are available for this set.`;}
