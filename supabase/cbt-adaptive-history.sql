@@ -1,63 +1,7 @@
--- Persistent history for BHA Adaptive CBT
--- Apply after the core BHA schema.
-
-create table if not exists public.cbt_attempt_history (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  exam text not null,
-  subject text not null,
-  mode text not null check (mode in ('practice','simulation')),
-  session_id text not null,
-  score integer not null check (score >= 0),
-  total integer not null check (total > 0 and score <= total),
-  unanswered integer not null default 0 check (unanswered >= 0),
-  timed_out boolean not null default false,
-  attention_changes integer not null default 0 check (attention_changes >= 0),
-  clipboard_attempts integer not null default 0 check (clipboard_attempts >= 0),
-  completed_at timestamptz not null default now(),
-  unique(user_id, session_id)
-);
-
-create table if not exists public.cbt_question_history (
-  user_id uuid not null references auth.users(id) on delete cascade,
-  exam text not null,
-  subject text not null,
-  question_id text not null,
-  topic text not null default 'General',
-  times_seen integer not null default 1 check (times_seen > 0),
-  times_correct integer not null default 0 check (times_correct >= 0 and times_correct <= times_seen),
-  last_seen_at timestamptz not null default now(),
-  primary key(user_id, exam, subject, question_id)
-);
-
-create index if not exists cbt_attempt_history_user_subject_idx on public.cbt_attempt_history(user_id, exam, subject, completed_at desc);
-create index if not exists cbt_question_history_user_subject_idx on public.cbt_question_history(user_id, exam, subject, last_seen_at desc);
-
-alter table public.cbt_attempt_history enable row level security;
-alter table public.cbt_question_history enable row level security;
-
-create policy "cbt attempts self select" on public.cbt_attempt_history for select using (user_id=auth.uid());
-create policy "cbt attempts self insert" on public.cbt_attempt_history for insert with check (user_id=auth.uid());
-create policy "cbt question history self select" on public.cbt_question_history for select using (user_id=auth.uid());
-create policy "cbt question history self insert" on public.cbt_question_history for insert with check (user_id=auth.uid());
-create policy "cbt question history self update" on public.cbt_question_history for update using (user_id=auth.uid()) with check (user_id=auth.uid());
-
-create or replace function public.record_cbt_question_result(
-  p_exam text,
-  p_subject text,
-  p_question_id text,
-  p_topic text,
-  p_correct boolean
-) returns void
-language sql
-security invoker
-set search_path=public
-as $$
-  insert into public.cbt_question_history(user_id,exam,subject,question_id,topic,times_seen,times_correct,last_seen_at)
-  values(auth.uid(),p_exam,p_subject,p_question_id,coalesce(nullif(p_topic,''),'General'),1,case when p_correct then 1 else 0 end,now())
-  on conflict(user_id,exam,subject,question_id) do update set
-    topic=excluded.topic,
-    times_seen=public.cbt_question_history.times_seen+1,
-    times_correct=public.cbt_question_history.times_correct+case when p_correct then 1 else 0 end,
-    last_seen_at=now();
-$$;
+-- Persistent history for BHA Adaptive CBT. Apply after the core BHA schema.
+create table if not exists public.cbt_attempt_history(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,exam text not null,subject text not null,mode text not null check(mode in('practice','simulation')),session_id text not null,score integer not null check(score>=0),total integer not null check(total>0 and score<=total),unanswered integer not null default 0 check(unanswered>=0),timed_out boolean not null default false,attention_changes integer not null default 0 check(attention_changes>=0),clipboard_attempts integer not null default 0 check(clipboard_attempts>=0),completed_at timestamptz not null default now(),unique(user_id,session_id));
+create table if not exists public.cbt_question_history(user_id uuid not null references auth.users(id) on delete cascade,exam text not null,subject text not null,question_id text not null,topic text not null default 'General',times_seen integer not null default 1 check(times_seen>0),times_correct integer not null default 0 check(times_correct>=0 and times_correct<=times_seen),last_seen_at timestamptz not null default now(),primary key(user_id,exam,subject,question_id));
+create index if not exists cbt_attempt_history_user_subject_idx on public.cbt_attempt_history(user_id,exam,subject,completed_at desc);create index if not exists cbt_question_history_user_subject_idx on public.cbt_question_history(user_id,exam,subject,last_seen_at desc);alter table public.cbt_attempt_history enable row level security;alter table public.cbt_question_history enable row level security;
+drop policy if exists "cbt attempts self select" on public.cbt_attempt_history;drop policy if exists "cbt attempts self insert" on public.cbt_attempt_history;drop policy if exists "cbt question history self select" on public.cbt_question_history;drop policy if exists "cbt question history self insert" on public.cbt_question_history;drop policy if exists "cbt question history self update" on public.cbt_question_history;
+create policy "cbt attempts self select" on public.cbt_attempt_history for select using(user_id=auth.uid());create policy "cbt attempts self insert" on public.cbt_attempt_history for insert with check(user_id=auth.uid());create policy "cbt question history self select" on public.cbt_question_history for select using(user_id=auth.uid());create policy "cbt question history self insert" on public.cbt_question_history for insert with check(user_id=auth.uid());create policy "cbt question history self update" on public.cbt_question_history for update using(user_id=auth.uid()) with check(user_id=auth.uid());
+create or replace function public.record_cbt_question_result(p_exam text,p_subject text,p_question_id text,p_topic text,p_correct boolean) returns void language sql security invoker set search_path=public as $$ insert into public.cbt_question_history(user_id,exam,subject,question_id,topic,times_seen,times_correct,last_seen_at) values(auth.uid(),p_exam,p_subject,p_question_id,coalesce(nullif(p_topic,''),'General'),1,case when p_correct then 1 else 0 end,now()) on conflict(user_id,exam,subject,question_id) do update set topic=excluded.topic,times_seen=public.cbt_question_history.times_seen+1,times_correct=public.cbt_question_history.times_correct+case when p_correct then 1 else 0 end,last_seen_at=now(); $$;
