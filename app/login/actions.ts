@@ -2,7 +2,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
-const allowedRoles = new Set(['proprietor','staff','parent','student']);
+const allowedRoles = new Set(['admin','teacher','parent','student']);
 export async function login(formData: FormData) {
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
@@ -13,7 +13,7 @@ export async function login(formData: FormData) {
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
   const role = profile?.role;
   if (!role || !allowedRoles.has(role)) { await supabase.auth.signOut(); redirect('/login?error=access'); }
-  redirect(`/dashboard/${role}`);
+  redirect(role === 'student' ? '/cbt' : `/dashboard/${role}`);
 }
 
 export async function logout() {
