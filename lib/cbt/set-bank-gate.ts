@@ -1,0 +1,1 @@
+export function numberedSetPublishable(distinctApprovedQuestions:number,setNumber:number,questionsPerSet:number){return distinctApprovedQuestions>=setNumber*questionsPerSet;}
