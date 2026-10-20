@@ -1,0 +1,1 @@
+export const CBT_SET_INVARIANTS=['outer selector chooses a complete set','each published set has exact configured question count','questions are distinct','incomplete sets stay locked','inner navigator moves within selected set'] as const;
