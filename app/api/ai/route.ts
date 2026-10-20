@@ -1,0 +1,3 @@
+import {NextRequest,NextResponse} from 'next/server';
+import {runBhaAI} from '@/lib/ai/provider';
+export async function POST(req:NextRequest){try{const body=await req.json();const mode=body?.mode;if(!['explain','coach','generate'].includes(mode))return NextResponse.json({error:'Invalid AI mode'},{status:400});const prompt=String(body?.prompt||'').trim();if(!prompt||prompt.length>6000)return NextResponse.json({error:'Invalid prompt'},{status:400});const result=await runBhaAI({mode,prompt,context:String(body?.context||'').slice(0,10000)});return NextResponse.json(result,{headers:{'Cache-Control':'no-store'}});}catch(e){console.error('BHA AI request failed',e);return NextResponse.json({error:'BHA AI is temporarily unavailable. CBT scoring is unaffected.'},{status:503});}}
