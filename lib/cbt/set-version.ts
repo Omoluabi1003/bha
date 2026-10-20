@@ -1,0 +1,1 @@
+export const CBT_SET_CONTRACT_VERSION=1;
