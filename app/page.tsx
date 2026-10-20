@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CreditCard, GraduationCap, Link2, MapPin, Share2, ShieldCheck, Sparkles, Users } from "lucide-react";
+import "./bha-home.css";
+import { ArrowRight, BookOpen, CreditCard, Link2, MapPin, Share2, ShieldCheck, Sparkles, Users } from "lucide-react";
 const subjects=["English","Oral English","Mathematics","Further Mathematics","Chemistry","Physics","Biology","Economics","Government","CRS","Literature in English","Commerce","Accounting","Geography","Computer Studies","Practical Biology","Practical Physics","Practical Chemistry"];
 const asset="https://raw.githubusercontent.com/Omoluabi1003/bha/main/9DF002EA-EE3F-4507-924B-82B021A3F925.png";
 const url="https://bha-nine.vercel.app/";
