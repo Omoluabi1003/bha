@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: "Best Home Academy | Eket",
   description: "Best Home Academy, Eket, Akwa Ibom State. Excellence Is Doing Ordinary Things Extraordinarily Well.",
   alternates: { canonical: "/" },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     type: "website",
     url: siteUrl,
