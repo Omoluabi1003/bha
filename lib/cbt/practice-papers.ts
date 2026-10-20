@@ -1,17 +1,13 @@
 import {PracticeQuestion} from './nigerian-subjects';
-import {buildAdaptiveExam} from './adaptive-exam';
+import {buildAdaptiveExam,readSeenQuestionIds} from './adaptive-exam';
 
 export const PRACTICE_PAPER_COUNT=40;
 
-/**
- * Compatibility entry point for the existing 40-paper UI.
- * A numbered box now represents an exam slot, not a memorisable fixed booklet.
- * Opening it assembles a fresh, validated, topic-balanced paper. The selected
- * paper stays locked by React for the active sitting, while a later sitting can
- * receive a different composition and option order.
- */
-export function buildPracticePaper(pool:PracticeQuestion[],questionCount:number,setNumber:number){
+/** Compatibility entry point. Each slot creates a fresh paper and favors unseen verified questions. */
+export function buildPracticePaper(pool:PracticeQuestion[],questionCount:number,setNumber:number,exam='',subject=''){
   if(pool.length<questionCount)return [];
-  const entropy=`${Math.min(PRACTICE_PAPER_COUNT,Math.max(1,Math.trunc(setNumber)))}:${Date.now()}:${Math.random()}`;
-  return buildAdaptiveExam(pool,questionCount,[],entropy).questions;
+  const safeSet=Math.min(PRACTICE_PAPER_COUNT,Math.max(1,Math.trunc(setNumber)));
+  const entropy=`${safeSet}:${Date.now()}:${Math.random()}`;
+  const seen=exam&&subject?readSeenQuestionIds(exam,subject):[];
+  return buildAdaptiveExam(pool,questionCount,seen,entropy).questions;
 }
