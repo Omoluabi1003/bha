@@ -1,0 +1,1 @@
+export function bankInReviewMessage(setNumber:number,questionsPerSet:number){return `Question Set ${setNumber} is in review. BHA will unlock it when all ${questionsPerSet} distinct questions have passed the bank integrity gate.`;}
