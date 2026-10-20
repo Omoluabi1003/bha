@@ -1,0 +1,1 @@
+import {setPolicy} from './set-policy';export function outerSetSelectors(exam:string,subject:string,bankSize:number,count:number){const q=setPolicy(exam,subject).questionsPerSet;return Array.from({length:count},(_,i)=>({setNumber:i+1,questionCount:q,available:bankSize>=(i+1)*q}));}
