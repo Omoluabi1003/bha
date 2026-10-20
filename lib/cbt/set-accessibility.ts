@@ -1,0 +1,1 @@
+export function numberedSetAriaLabel(setNumber:number,count:number,available:boolean){return available?`Open question set ${setNumber}, ${count} questions`:`Question set ${setNumber}, bank in review`;}
