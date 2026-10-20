@@ -1,0 +1,1 @@
+Final architecture check: outer numbered controls select sets; inner numbered controls select questions; set membership is persistable; attempts can retain selected set identity; padded banks are blocked.
