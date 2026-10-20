@@ -1,0 +1,1 @@
+import type {CBTQuestionSetState} from './set-bank-state';export function setUI(state:CBTQuestionSetState){return state.status==='READY'?{disabled:false,title:`Set ${state.setNumber}`,detail:`${state.questionCount} questions`}:{disabled:true,title:`Set ${state.setNumber}`,detail:'Bank in Review'};}
