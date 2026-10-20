@@ -1,0 +1,1 @@
+export const CBT_CLIENT_ANSWER_KEYS_ALLOWED=false;
