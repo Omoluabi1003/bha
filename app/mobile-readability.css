@@ -1,0 +1,11 @@
+/* Mobile readability guard: keep photography visible without sacrificing copy contrast. */
+@media(max-width:560px){
+ .bhaHome .eketStory:after{background:linear-gradient(180deg,rgba(233,237,241,.76),rgba(233,237,241,.88))}
+ .bhaHome .storyEduPhoto{opacity:.48;filter:saturate(.92) contrast(1.02)}
+ .bhaHome .storyCopy{background:rgba(247,249,250,.88);border:1px solid rgba(20,33,58,.08);border-radius:18px;padding:22px 18px;box-shadow:0 14px 36px rgba(20,33,58,.08);backdrop-filter:blur(8px)}
+ .bhaHome .storyCopy .eyebrow{color:#77500d;text-shadow:0 1px 0 rgba(255,255,255,.75)}
+ .bhaHome .storyCopy h2{color:#0b1b34;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+ .bhaHome .storyCopy p{color:#34445a;font-weight:500}
+ .bhaHome .experiencePills span{background:rgba(255,255,255,.94);color:#14213a;box-shadow:0 4px 14px rgba(20,33,58,.08)}
+ .bhaHome .quote{background:rgba(255,255,255,.94);color:#14213a}
+}

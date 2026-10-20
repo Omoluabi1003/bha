@@ -1,70 +1,94 @@
 # Best Home Academy (BHA)
 
-**Excellence Is Doing Ordinary Things Extraordinarily Well**
+> **Excellence Is Doing Ordinary Things Extraordinarily Well.**
 
-Digital school management and payment platform for Best Home Academy.
+Best Home Academy is a mobile-first academic and digital-campus platform for focused secondary-school and external-examination preparation in Eket, Akwa Ibom State, Nigeria.
 
-**Address:** 16 Umana Ndon, Eket, Akwa Ibom State, Nigeria
+**Location:** 16 Umana Ndon, Eket, Akwa Ibom State, Nigeria  
+**Website:** https://bha-nine.vercel.app/
 
-## Platform Vision
+## Platform
 
-BHA is being developed as a mobile-first school management portal, not merely a brochure website. It will provide a public-facing academy website alongside secure role-based workspaces for the Proprietor, Staff, Parents, and Students.
+BHA combines the academy's public website with a secure Digital Campus for students, parents, staff and the proprietor. The platform is being built around academic preparation, admissions, school administration, payments and a serious Nigerian CBT examination environment.
 
-## Core Modules
+### Academic Experience
 
-- Public academy website
+- JAMB, WAEC and NECO preparation
+- 18 core and practical subjects
+- Timed CBT Practice and Exam Simulation modes
+- Adaptive question assembly designed to reduce memorisation
+- Student attempt history and topic-level performance tracking
+- Controlled question-authoring, academic review and verified-question workflow
+- Server-controlled examination architecture that keeps verified answer keys away from the browser
+
+### Digital Campus
+
 - Online admissions
-- Proprietor dashboard
-- Staff dashboard
-- Parent portal
-- Student portal
-- Student and parent records
-- Academic sessions and subjects
-- Attendance and results
-- Fee invoicing and balances
-- Secure online school-fee payments in Nigerian Naira
-- Digital receipts and transaction history
+- Proprietor, staff, parent and student access
+- Student and guardian records
+- Academic sessions, subjects, attendance and results
+- School-fee invoices, balances, payment history and verified receipts
 - Announcements and school communications
-- Role-based access control and audit trail
+- Role-based access control and audit trails
 
-## Payment Architecture
+## BHA Adaptive Exam Engine
 
-The production payment flow will use a Nigerian payment gateway such as Paystack or Flutterwave. Secret credentials must remain server-side and must never be committed to this repository. Payment status will be verified server-side before a student's account is credited.
+The CBT system is designed so repeated practice measures knowledge rather than familiarity with a fixed paper.
 
-## Proposed Stack
+The architecture separates question creation from live examinations:
 
-- Next.js
-- TypeScript
-- PostgreSQL / Supabase
-- Role-based authentication
-- Paystack or Flutterwave
-- Vercel
+`Candidate Question → Validation → Academic Review → Approved Candidate → Verified Question Bank → Locked Exam Session → Server Scoring`
 
-## Roles
+AI-assisted authoring can support controlled content production, but generated material does not enter a live examination automatically. Formal exam sessions are assembled from verified material, and the production direction is server-side session creation and scoring rather than exposing answer keys to the client.
 
-### Proprietor
-Full institutional oversight including admissions, users, students, staff, payments, outstanding balances, academic records, reports, announcements, and audit activity.
-
-### Staff
-Access limited to authorized academic and administrative functions, including assigned students/classes, attendance, results, and announcements.
-
-### Parents
-Secure access to linked children, invoices, balances, payment history, receipts, results, attendance, and school announcements.
-
-### Students
-Secure access to personal profile, academic records, results, schedules, payment status, and announcements.
+Practice Mode can reinforce weaker topics. Exam Simulation remains examination-focused, timed and free from live AI assistance.
 
 ## Security Principles
 
 - Least-privilege role permissions
-- Server-side payment verification
-- No payment secrets in client code
-- Auditable financial changes
+- Supabase Row Level Security
+- Server-side examination scoring for verified-bank sessions
+- Quarantined question candidates separated from student-facing verified content
+- No live AI generation during formal exam sessions
+- Payment secrets remain server-side
+- Server-side payment verification before account credit
+- Auditable financial and academic operations
 - Protected student information
-- Secure sessions and password recovery
-- Database constraints and validation
-- Production backups
+- Secure sessions and account recovery
+- Database constraints, validation and production backups
 
-## Status
+## Technology
 
-Initial architecture established. Application implementation follows.
+- Next.js 15
+- React 19
+- TypeScript
+- PostgreSQL / Supabase
+- Supabase Auth and Row Level Security
+- Vercel
+- Lucide icons
+- Nigerian payment-gateway integration architecture
+
+## Repository Structure
+
+- `app/` application routes, public experience, Digital Campus and API endpoints
+- `app/cbt/` CBT student experience
+- `app/api/cbt/` authenticated CBT history, authoring and examination endpoints
+- `lib/cbt/` adaptive assembly, validation, integrity telemetry and CBT domain logic
+- `supabase/` database schemas and CBT migrations
+
+## Deployment Notes
+
+SQL files committed under `supabase/` describe database changes but are not proof that those migrations have been applied to the deployed Supabase project. Database-backed features should only be considered live after the corresponding migration is deployed and verified.
+
+Environment credentials and secret keys must never be committed to this repository.
+
+## Development Direction
+
+Current work is focused on completing the verified-question pipeline and authoritative server-scored CBT sessions, then progressively connecting the Adaptive Exam Engine to the database-backed verified bank while retaining safe fallback behavior during migration.
+
+## Ownership
+
+**Best Home Academy LTD**  
+Eket, Akwa Ibom State, Nigeria
+
+Designed and developed by **ETL GIS Consulting LLC**.
