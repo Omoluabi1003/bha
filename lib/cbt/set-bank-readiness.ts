@@ -1,0 +1,1 @@
+export function numberedSetReady(approvedDistinctQuestions:number,setNumber:number,questionsPerSet:number){return approvedDistinctQuestions>=setNumber*questionsPerSet;}
