@@ -1,4 +1,6 @@
 import {PracticeQuestion} from './nigerian-subjects';
+import {applyBlueprint} from './exam-blueprint';
+import {verifiedPool} from './question-validator';
 
 export type ExamMode='practice'|'simulation';
 export type ExamSession={id:string;seed:string;questions:PracticeQuestion[];unseenCount:number;reusedCount:number};
@@ -7,20 +9,18 @@ function hash(value:string){let h=2166136261;for(let i=0;i<value.length;i++){h^=
 function makeSeed(){return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`}
 function shuffle<T>(items:T[],seed:string){return [...items].sort((a,b)=>hash(`${seed}:${JSON.stringify(a)}`)-hash(`${seed}:${JSON.stringify(b)}`))}
 
-/**
- * Builds a fresh locked exam from verified questions. Previously seen questions
- * are deprioritized, not permanently excluded, so small verified banks still work.
- * The returned seed locks the paper for the lifetime of the session.
- */
+/** Builds a fresh, balanced, locked examination from verified questions.
+ * Unseen questions rank ahead of previously seen questions. The blueprint then
+ * spreads selection across available topics instead of relying on blind randomization. */
 export function buildAdaptiveExam(pool:PracticeQuestion[],questionCount:number,seenIds:string[],seed=makeSeed()):ExamSession{
-  if(pool.length<questionCount)return{id:`bha-${seed}`,seed,questions:[],unseenCount:0,reusedCount:0};
+  const safePool=verifiedPool(pool);
+  if(safePool.length<questionCount)return{id:`bha-${seed}`,seed,questions:[],unseenCount:0,reusedCount:0};
   const seen=new Set(seenIds);
-  const unseen=shuffle(pool.filter(q=>!seen.has(q.id)),`${seed}:unseen`);
-  const prior=shuffle(pool.filter(q=>seen.has(q.id)),`${seed}:prior`);
-  const chosen=[...unseen,...prior].slice(0,questionCount);
-  const questions=chosen.map((q,index)=>{
+  const rank=(q:PracticeQuestion)=>hash(`${seed}:${seen.has(q.id)?'seen':'unseen'}:${q.id}`)+(seen.has(q.id)?2**32:0);
+  const chosen=applyBlueprint(safePool,questionCount,rank);
+  const questions=shuffle(chosen,`${seed}:question-order`).map(q=>{
     const optionOrder=shuffle(q.o.map((text,original)=>({text,original})),`${seed}:${q.id}:options`);
-    return {...q,id:q.id,o:optionOrder.map(x=>x.text),a:optionOrder.findIndex(x=>x.original===q.a),sessionOrder:index};
+    return {...q,o:optionOrder.map(x=>x.text),a:optionOrder.findIndex(x=>x.original===q.a)};
   });
   const unseenCount=chosen.filter(q=>!seen.has(q.id)).length;
   return{id:`bha-${hash(seed).toString(36)}`,seed,questions,unseenCount,reusedCount:chosen.length-unseenCount};
