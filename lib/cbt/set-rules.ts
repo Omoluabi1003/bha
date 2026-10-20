@@ -1,0 +1,1 @@
+export const CBT_SET_RULES={noQuestionReuseAcrossPublishedSets:true,lockIncompleteSets:true,persistQuestionOrderPerAttempt:true} as const;
