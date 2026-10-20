@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import "../cbt.css";
 const questions=[
  {q:"The students ___ preparing for the examination.",o:["is","are","was","be"]},
@@ -9,8 +8,8 @@ const questions=[
  {q:"Which process allows green plants to manufacture food using light energy?",o:["Respiration","Photosynthesis","Transpiration","Germination"]}
 ];
 export default function Preview(){
- const params=useSearchParams();const exam=params.get("exam")||"JAMB";const [allowed,setAllowed]=useState<boolean|null>(null);const [current,setCurrent]=useState(0);const [answers,setAnswers]=useState<Record<number,number>>({});
- useEffect(()=>setAllowed(localStorage.getItem("bha-developer-cbt")==="enabled"),[]);
+ const [exam,setExam]=useState("JAMB");const [allowed,setAllowed]=useState<boolean|null>(null);const [current,setCurrent]=useState(0);const [answers,setAnswers]=useState<Record<number,number>>({});
+ useEffect(()=>{setAllowed(localStorage.getItem("bha-developer-cbt")==="enabled");const value=new URLSearchParams(window.location.search).get("exam");if(value)setExam(value)},[]);
  if(allowed===null)return <main className="previewGate">Checking Developer Mode...</main>;
  if(!allowed)return <main className="previewGate"><h1>Developer Mode is locked</h1><p>Return to the CBT Practice Centre and use the hidden developer unlock.</p><Link href="/cbt">Return to CBT</Link></main>;
  const item=questions[current];
