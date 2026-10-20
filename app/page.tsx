@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import "./bha-home.css";
+import "./payment-visibility.css";
 import { ArrowRight, BarChart3, BookOpen, CalendarDays, CheckCircle2, Clock3, CreditCard, GraduationCap, Link2, MapPin, Megaphone, MonitorCheck, Share2, ShieldCheck, Sparkles, Target, Users } from "lucide-react";
 const subjects=["English","Oral English","Mathematics","Further Mathematics","Chemistry","Physics","Biology","Economics","Government","CRS","Literature in English","Commerce","Accounting","Geography","Computer Studies","Practical Biology","Practical Physics","Practical Chemistry"];
 const asset="https://raw.githubusercontent.com/Omoluabi1003/bha/main/9DF002EA-EE3F-4507-924B-82B021A3F925.png";const heroPhoto="https://images.pexels.com/photos/34162709/pexels-photo-34162709.jpeg?auto=compress&cs=tinysrgb&w=1600";const studyPhoto="https://images.pexels.com/photos/34162714/pexels-photo-34162714.jpeg?auto=compress&cs=tinysrgb&w=1600";const classroomPhoto="https://images.pexels.com/photos/6346833/pexels-photo-6346833.jpeg?auto=compress&cs=tinysrgb&w=1600";const url="https://bha-nine.vercel.app/";const title="Best Home Academy | Eket";const text="Preparation that turns ambition into results. JAMB, WAEC and NECO preparation in Eket, Akwa Ibom State.";
