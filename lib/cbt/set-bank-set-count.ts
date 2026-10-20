@@ -1,0 +1,1 @@
+export function completeQuestionSetCount(distinctApprovedQuestions:number,questionsPerSet:number){return Math.floor(distinctApprovedQuestions/questionsPerSet);}
