@@ -1,55 +1,14 @@
-create table if not exists public.cbt_exam_sessions (
- id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade,
- exam text not null, subject text not null, mode text not null check(mode in('practice','simulation')),
- question_ids uuid[] not null, started_at timestamptz not null default now(), submitted_at timestamptz,
- score integer, total integer not null, status text not null default 'active' check(status in('active','submitted','expired')),
- unique(id,user_id)
-);
-alter table public.cbt_exam_sessions enable row level security;
-drop policy if exists "cbt sessions own read" on public.cbt_exam_sessions;
-create policy "cbt sessions own read" on public.cbt_exam_sessions for select using(auth.uid()=user_id);
-
-create or replace function public.start_verified_cbt_session(p_exam text,p_subject text,p_mode text,p_count integer)
-returns table(session_id uuid,question_id uuid,topic text,question_text text,options jsonb,position integer)
-language plpgsql security definer set search_path=public as $$
-declare sid uuid; ids uuid[];
+create table if not exists public.cbt_exam_sessions(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users(id) on delete cascade,exam text not null,subject text not null,mode text not null check(mode in('practice','simulation')),question_ids uuid[] not null,started_at timestamptz not null default now(),submitted_at timestamptz,score integer,total integer not null,status text not null default 'active' check(status in('active','submitted','expired')),unique(id,user_id));
+alter table public.cbt_exam_sessions enable row level security;drop policy if exists "cbt sessions own read" on public.cbt_exam_sessions;create policy "cbt sessions own read" on public.cbt_exam_sessions for select using(auth.uid()=user_id);
+create or replace function public.start_verified_cbt_session(p_exam text,p_subject text,p_mode text,p_count integer) returns table(session_id uuid,question_id uuid,topic text,question_text text,options jsonb,position integer) language plpgsql security definer set search_path=public as $$
+declare sid uuid;ids uuid[];
 begin
- if auth.uid() is null then raise exception 'authentication required'; end if;
- if length(trim(coalesce(p_exam,'')))<1 or length(trim(coalesce(p_subject,'')))<1 then raise exception 'exam and subject required'; end if;
- if p_mode not in('practice','simulation') or p_count<1 or p_count>60 then raise exception 'invalid session request'; end if;
- select array_agg(id) into ids from (select id from public.cbt_verified_questions where active=true and exam=trim(p_exam) and subject=trim(p_subject) order by random() limit p_count) q;
- if coalesce(array_length(ids,1),0)<>p_count then raise exception 'verified bank not ready'; end if;
- insert into public.cbt_exam_sessions(user_id,exam,subject,mode,question_ids,total) values(auth.uid(),trim(p_exam),trim(p_subject),p_mode,ids,p_count) returning id into sid;
- return query select sid,q.id,q.topic,q.question_text,q.options,u.ord::integer from unnest(ids) with ordinality u(id,ord) join public.cbt_verified_questions q on q.id=u.id order by u.ord;
+ if auth.uid() is null then raise exception 'authentication required';end if;if length(trim(coalesce(p_exam,'')))<1 or length(trim(coalesce(p_subject,'')))<1 then raise exception 'exam and subject required';end if;if p_mode not in('practice','simulation') or p_count<1 or p_count>60 then raise exception 'invalid session request';end if;
+ -- Rank unseen material first, then distribute selections across topics. Practice may
+ -- prefer historically weaker topics; simulation deliberately ignores weakness so
+ -- academic difficulty is not personalized during formal exam simulation.
+ with pool as(select q.id,q.topic,coalesce(h.times_seen,0) seen,case when p_mode='practice' then coalesce(h.times_correct::numeric/nullif(h.times_seen,0),1) else 1 end mastery from public.cbt_verified_questions q left join public.cbt_question_history h on h.user_id=auth.uid() and h.exam=p_exam and h.subject=p_subject and h.question_id=q.id::text where q.active=true and q.exam=trim(p_exam) and q.subject=trim(p_subject)),ranked as(select *,row_number() over(partition by topic order by (seen=0) desc,mastery asc,random()) topic_rank from pool),chosen as(select id from ranked order by (seen=0) desc,topic_rank asc,mastery asc,random() limit p_count) select array_agg(id) into ids from chosen;
+ if coalesce(array_length(ids,1),0)<>p_count then raise exception 'verified bank not ready';end if;insert into public.cbt_exam_sessions(user_id,exam,subject,mode,question_ids,total) values(auth.uid(),trim(p_exam),trim(p_subject),p_mode,ids,p_count) returning id into sid;return query select sid,q.id,q.topic,q.question_text,q.options,u.ord::integer from unnest(ids) with ordinality u(id,ord) join public.cbt_verified_questions q on q.id=u.id order by u.ord;
 end;$$;
-
-create or replace function public.submit_verified_cbt_session(p_session_id uuid,p_answers jsonb)
-returns table(score integer,total integer,unanswered integer)
-language plpgsql security definer set search_path=public as $$
-declare s public.cbt_exam_sessions; earned integer; missing integer;
-begin
- if auth.uid() is null then raise exception 'authentication required'; end if;
- if p_answers is null or jsonb_typeof(p_answers)<>'object' then raise exception 'answers must be an object'; end if;
- select * into s from public.cbt_exam_sessions where id=p_session_id and user_id=auth.uid() for update;
- if not found then raise exception 'session not found'; end if;
- if s.status<>'active' then raise exception 'session already closed'; end if;
-
- -- Only session question IDs are considered. Values outside 0..3 or non-integer JSON
- -- values are treated as unanswered instead of being cast unsafely.
- select count(*) filter(where
-          p_answers ? q.id::text
-          and jsonb_typeof(p_answers->q.id::text)='number'
-          and (p_answers->q.id::text)::text ~ '^[0-3]$'
-          and ((p_answers->q.id::text)::text)::integer=q.correct_option),
-        count(*) filter(where
-          not(p_answers ? q.id::text)
-          or jsonb_typeof(p_answers->q.id::text)<>'number'
-          or not((p_answers->q.id::text)::text ~ '^[0-3]$'))
- into earned,missing from public.cbt_verified_questions q where q.id=any(s.question_ids);
- update public.cbt_exam_sessions set score=earned,submitted_at=now(),status='submitted' where id=s.id;
- return query select earned,s.total,missing;
-end;$$;
-revoke all on function public.start_verified_cbt_session(text,text,text,integer) from public;
-revoke all on function public.submit_verified_cbt_session(uuid,jsonb) from public;
-grant execute on function public.start_verified_cbt_session(text,text,text,integer) to authenticated;
-grant execute on function public.submit_verified_cbt_session(uuid,jsonb) to authenticated;
+create or replace function public.submit_verified_cbt_session(p_session_id uuid,p_answers jsonb) returns table(score integer,total integer,unanswered integer) language plpgsql security definer set search_path=public as $$ declare s public.cbt_exam_sessions;earned integer;missing integer;begin if auth.uid() is null then raise exception 'authentication required';end if;if p_answers is null or jsonb_typeof(p_answers)<>'object' then raise exception 'answers must be an object';end if;select * into s from public.cbt_exam_sessions where id=p_session_id and user_id=auth.uid() for update;if not found then raise exception 'session not found';end if;if s.status<>'active' then raise exception 'session already closed';end if;select count(*) filter(where p_answers?q.id::text and jsonb_typeof(p_answers->q.id::text)='number' and (p_answers->q.id::text)::text~'^[0-3]$' and ((p_answers->q.id::text)::text)::integer=q.correct_option),count(*) filter(where not(p_answers?q.id::text) or jsonb_typeof(p_answers->q.id::text)<>'number' or not((p_answers->q.id::text)::text~'^[0-3]$')) into earned,missing from public.cbt_verified_questions q where q.id=any(s.question_ids);update public.cbt_exam_sessions set score=earned,submitted_at=now(),status='submitted' where id=s.id;return query select earned,s.total,missing;end;$$;
+revoke all on function public.start_verified_cbt_session(text,text,text,integer) from public;revoke all on function public.submit_verified_cbt_session(uuid,jsonb) from public;grant execute on function public.start_verified_cbt_session(text,text,text,integer) to authenticated;grant execute on function public.submit_verified_cbt_session(uuid,jsonb) to authenticated;
