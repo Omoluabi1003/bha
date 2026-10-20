@@ -1,0 +1,1 @@
+export const CBT_BANK_CONSTITUTION=['number means complete question set','no recycled questions','no fake set labels','lock incomplete sets','persist selected set per attempt','score on server'] as const;
