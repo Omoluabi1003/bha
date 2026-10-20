@@ -1,0 +1,1 @@
+import type {PracticeQuestion} from './nigerian-subjects';export function validateSetBank(bank:PracticeQuestion[],required:number){const ids=new Set(bank.map(q=>q.id));const stems=new Set(bank.map(q=>q.q.trim().toLowerCase().replace(/\s+/g,' ')));return {enough:bank.length>=required,unique:ids.size===bank.length&&stems.size===bank.length};}
