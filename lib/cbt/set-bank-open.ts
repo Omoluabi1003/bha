@@ -1,0 +1,1 @@
+import type {PracticeQuestion} from './nigerian-subjects';import {questionsForNumberedSet} from './numbered-set-selector';export function openQuestionSet(exam:string,subject:string,bank:PracticeQuestion[],setNumber:number){return questionsForNumberedSet(exam,subject,bank,setNumber);}
