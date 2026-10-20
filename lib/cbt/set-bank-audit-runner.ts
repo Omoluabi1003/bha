@@ -1,0 +1,3 @@
+import type {PracticeQuestion} from './nigerian-subjects';
+import type {CBTBankAuditResult} from './set-bank-audit-result';
+export function auditBank(subject:string,bank:PracticeQuestion[]):CBTBankAuditResult{const uniqueIds=new Set(bank.map(q=>q.id)).size;const uniqueStems=new Set(bank.map(q=>q.q.trim().toLowerCase().replace(/\s+/g,' '))).size;const syntheticLabels=bank.filter(q=>/\b(?:practice\s+)?set\s+\d+\b/i.test(q.q)).length;return {subject,total:bank.length,uniqueIds,uniqueStems,syntheticLabels,passes:bank.length>0&&uniqueIds===bank.length&&uniqueStems===bank.length&&syntheticLabels===0};}
