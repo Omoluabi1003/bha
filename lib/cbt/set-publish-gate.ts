@@ -1,0 +1,2 @@
+import type {PracticeQuestion} from './nigerian-subjects';
+export function canPublishQuestionSet(questions:PracticeQuestion[],expected:number){if(questions.length!==expected)return false;const ids=new Set(questions.map(q=>q.id));const stems=new Set(questions.map(q=>q.q.trim().toLowerCase().replace(/\s+/g,' ')));return ids.size===expected&&stems.size===expected&&!questions.some(q=>/\b(?:practice\s+)?set\s+\d+\b/i.test(q.q));}
