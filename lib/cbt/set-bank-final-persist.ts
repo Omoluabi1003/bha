@@ -1,0 +1,1 @@
+export const CBT_SET_ORDER_PERSISTED_PER_ATTEMPT=true;
