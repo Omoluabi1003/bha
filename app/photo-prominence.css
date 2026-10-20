@@ -1,0 +1,15 @@
+/* Deliberately stronger photographic treatment: imagery should read as a visible part of BHA's identity, not as a faint texture. */
+.bhaHome .heroEduPhoto{inset:0 0 0 24%;opacity:1;filter:saturate(1.08) contrast(1.07);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 16%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 16%,#000 100%)}
+.bhaHome .akwaHero:after{background:linear-gradient(90deg,rgba(12,26,47,.96) 0%,rgba(12,26,47,.74) 34%,rgba(12,26,47,.1) 58%,rgba(12,26,47,.015) 100%)}
+.bhaHome .academicsEduPhoto{right:-1%;width:72%;opacity:.9;filter:saturate(1.02) contrast(1.06);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 13%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 13%,#000 100%)}
+.bhaHome .academicSection:after{background:linear-gradient(90deg,#f5f1e9 0%,rgba(245,241,233,.82) 29%,rgba(245,241,233,.08) 55%,rgba(245,241,233,.02) 100%)}
+.bhaHome .academicSection .subjects div{background:rgba(255,255,255,.74)}
+.bhaHome .storyEduPhoto{inset:0 34% 0 0;opacity:.96;filter:saturate(1.04) contrast(1.06);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 78%,transparent 100%);mask-image:linear-gradient(90deg,#000 0%,#000 78%,transparent 100%)}
+.bhaHome .eketStory:after{background:linear-gradient(90deg,rgba(233,237,241,.02),rgba(233,237,241,.08) 38%,#e9edf1 64%)}
+.bhaHome .storyVisual{background:rgba(16,32,58,.38)}
+.bhaHome .admissionsEduPhoto{inset:0 0 0 31%;opacity:.96;filter:saturate(1.05) contrast(1.07);-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 14%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 14%,#000 100%)}
+.bhaHome .admissionsDark:after{background:linear-gradient(90deg,#0d182d 0%,rgba(13,24,45,.76) 37%,rgba(13,24,45,.1) 65%,rgba(13,24,45,.02) 100%)}
+.bhaHome .feesEduPhoto{left:-1%;width:66%;opacity:.86;filter:saturate(1.02) contrast(1.05);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 80%,transparent 100%);mask-image:linear-gradient(90deg,#000 0%,#000 80%,transparent 100%)}
+.bhaHome .feesSection:after{background:linear-gradient(90deg,rgba(238,241,242,.04),rgba(238,241,242,.24) 45%,#eef1f2 72%)}
+@media(max-width:900px){.bhaHome .heroEduPhoto{left:5%;opacity:.9}.bhaHome .academicsEduPhoto{width:100%;opacity:.74}.bhaHome .storyEduPhoto{right:0;opacity:.78}.bhaHome .admissionsEduPhoto{left:6%;opacity:.82}.bhaHome .feesEduPhoto{width:94%;opacity:.7}}
+@media(max-width:560px){.bhaHome .heroEduPhoto{left:0;opacity:.82}.bhaHome .akwaHero:after{background:rgba(12,26,47,.42)}.bhaHome .academicsEduPhoto{opacity:.62}.bhaHome .academicSection:after{background:rgba(245,241,233,.38)}.bhaHome .storyEduPhoto{inset:0;opacity:.64}.bhaHome .eketStory:after{background:rgba(233,237,241,.36)}.bhaHome .admissionsEduPhoto{inset:0;opacity:.72}.bhaHome .admissionsDark:after{background:rgba(13,24,45,.42)}.bhaHome .feesEduPhoto{width:100%;opacity:.58}.bhaHome .feesSection:after{background:rgba(238,241,242,.38)}}

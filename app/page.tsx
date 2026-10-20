@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import "./bha-home.css";
+import "./photo-prominence.css";
 import "./payment-visibility.css";
 import { ArrowRight, BarChart3, BookOpen, CalendarDays, CheckCircle2, Clock3, CreditCard, GraduationCap, Link2, MapPin, Megaphone, MonitorCheck, Share2, ShieldCheck, Sparkles, Target, Users } from "lucide-react";
 import {bhaAcademicSubjects as subjects} from "../lib/academic-subjects";
