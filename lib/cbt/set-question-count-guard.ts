@@ -1,0 +1,1 @@
+export function assertQuestionCountPerSet(value:number){if(value!==40&&value!==50&&value!==60)throw new Error('BHA numbered question sets must currently contain 40, 50 or 60 questions.');return value;}
