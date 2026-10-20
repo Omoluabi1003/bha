@@ -1,0 +1,1 @@
+import type {PracticeQuestion} from './nigerian-subjects';import {buildSetState} from './set-bank-state-builder';export function publishableSetState(exam:string,subject:string,bank:PracticeQuestion[],setNumber:number){return buildSetState(exam,subject,bank,setNumber);}
