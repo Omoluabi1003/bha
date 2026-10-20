@@ -6,5 +6,18 @@ export const subjectCatalog={JAMB:["Use of English","Agriculture","Arabic","Art"
 export type ExamName=keyof typeof subjectCatalog;
 export type PracticeQuestion={id:string;subject:string;topic:string;q:string;o:string[];a:number};
 const fullBank=(subject:string):PracticeQuestion[]|null=>{if(subject==='Use of English'||subject==='English Language')return englishBank(subject);if(subject==='Mathematics'||subject==='General Mathematics')return mathematicsBank(subject);if(subject==='Biology')return biologyBank(subject);if(subject==='Physics')return physicsBank(subject);if(subject==='Government')return governmentBank;if(subject==='Economics')return economicsBank;if(subject==='Chemistry')return chemistryBank(subject);if(subject==='Agriculture'||subject==='Agricultural Science')return agricultureBank(subject);if(subject==='Commerce')return commerceBank(subject);if(subject==='Financial Accounting'||subject==='Accounting'||subject==='Principles of Accounts')return accountingBank(subject);if(subject==='Geography')return geographyBank(subject);if(subject==='Civic Education')return civicEducationBank;if(subject==='Christian Religious Studies')return crsBank(subject);if(subject==='Islamic Studies')return islamicStudiesBank;if(subject==='Literature-in-English')return literatureBank;if(subject==='Computer Studies')return computerStudiesBank;if(subject==='Marketing')return marketingBank;return null};
-export function questionsFor(subject:string):PracticeQuestion[]{const full=fullBank(subject);return full?full.map(x=>({...x,subject})):[];}
-export function hasVerifiedBank(subject:string){return questionsFor(subject).length>0;}
+
+// GeoAware-Core gate: a numbered selector represents one question inside a complete
+// exam set. A subject bank is selectable only when every question is genuinely
+// distinct. Relabelled/recycled "Set N" entries are rejected rather than padded.
+const normalized=(value:string)=>value.trim().toLowerCase().replace(/\s+/g,' ');
+export function bankIntegrity(subject:string){
+ const bank=fullBank(subject)?.map(x=>({...x,subject}))??[];
+ const ids=new Set(bank.map(x=>x.id));
+ const stems=new Set(bank.map(x=>normalized(x.q.replace(/\s*[\[(](?:practice\s+)?set\s+\d+[\])]?\s*$/i,''))));
+ const hasSyntheticLabels=bank.some(x=>/\b(?:practice\s+)?set\s+\d+\b/i.test(x.q));
+ const valid=bank.length>0&&ids.size===bank.length&&stems.size===bank.length&&!hasSyntheticLabels;
+ return {valid,count:bank.length,bank:valid?bank:[],reason:valid?null:'Bank in Review: this subject does not yet contain a fully distinct question set.'};
+}
+export function questionsFor(subject:string):PracticeQuestion[]{return bankIntegrity(subject).bank;}
+export function hasVerifiedBank(subject:string){return bankIntegrity(subject).valid;}
