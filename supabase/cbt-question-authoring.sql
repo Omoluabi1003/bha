@@ -23,5 +23,19 @@ create table if not exists public.cbt_question_candidates (
 create index if not exists cbt_question_candidates_review_idx on public.cbt_question_candidates(status,exam,subject,topic);
 alter table public.cbt_question_candidates enable row level security;
 
--- No student-facing read policy is intentionally defined.
--- Service-side/admin authoring workflows can manage this queue without exposing candidates to exam clients.
+drop policy if exists "cbt authoring staff read" on public.cbt_question_candidates;
+drop policy if exists "cbt authoring staff create" on public.cbt_question_candidates;
+drop policy if exists "cbt authoring proprietor review" on public.cbt_question_candidates;
+
+create policy "cbt authoring staff read" on public.cbt_question_candidates for select
+using (public.current_role() in ('proprietor','staff'));
+
+create policy "cbt authoring staff create" on public.cbt_question_candidates for insert
+with check (public.current_role() in ('proprietor','staff') and created_by=auth.uid() and status in ('draft','rejected','review'));
+
+-- Final approval is deliberately restricted to the proprietor role.
+create policy "cbt authoring proprietor review" on public.cbt_question_candidates for update
+using (public.current_role()='proprietor')
+with check (public.current_role()='proprietor');
+
+-- No student-facing policy exists. Students cannot read or mutate the authoring quarantine.
