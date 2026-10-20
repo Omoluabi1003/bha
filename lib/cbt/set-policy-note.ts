@@ -1,0 +1,1 @@
+export const CBT_PRACTICE_POLICY_NOTE='WAEC and NECO paper structure varies by subject. The 50-question BHA practice-set policy is a practice format unless a verified subject-specific official configuration is supplied.';
