@@ -1,0 +1,1 @@
+export function setBankCoverage(distinctQuestions:number,questionsPerSet:number){const sets=Math.floor(distinctQuestions/questionsPerSet);return {distinctQuestions,questionsPerSet,completeSets:sets,coveredQuestions:sets*questionsPerSet};}
