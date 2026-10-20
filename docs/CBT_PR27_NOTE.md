@@ -1,0 +1,1 @@
+BHA CBT now treats the numbered selector as a selector of complete question sets. The question numbers shown after a set opens remain the per-question navigator. This is the canonical behavior for future CBT development.
