@@ -1,0 +1,1 @@
+export function setIntegrityMessage(setNumber:number,ready:boolean,count:number){return ready?`Set ${setNumber} ready: ${count} distinct questions.`:`Set ${setNumber} locked: complete distinct question inventory required.`;}
