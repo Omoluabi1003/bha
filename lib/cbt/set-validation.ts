@@ -1,0 +1,2 @@
+import type {PracticeQuestion} from './nigerian-subjects';
+export function validateQuestionSet(setNumber:number,questions:PracticeQuestion[],expected:number){if(questions.length!==expected)throw new Error(`Question Set ${setNumber} must contain exactly ${expected} questions.`);if(new Set(questions.map(q=>q.id)).size!==expected)throw new Error(`Question Set ${setNumber} contains duplicate questions.`);return true;}
