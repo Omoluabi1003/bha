@@ -1,0 +1,2 @@
+type Props={setNumber:number;questionCount:number;onSelect:(setNumber:number)=>void};
+export default function PaperSetCard({setNumber,questionCount,onSelect}:Props){return <button type="button" onClick={()=>onSelect(setNumber)} aria-label={`Open practice set ${setNumber}, ${questionCount} questions`}><strong>{setNumber}</strong><span>SET {setNumber}</span><small>{questionCount} QUESTIONS</small></button>}
