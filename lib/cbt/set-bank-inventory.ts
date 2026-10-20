@@ -1,0 +1,1 @@
+export function bankInventory(totalDistinct:number,questionsPerSet:number){return {totalDistinct,questionsPerSet,completeSets:Math.floor(totalDistinct/questionsPerSet),unusedQuestions:totalDistinct%questionsPerSet};}
