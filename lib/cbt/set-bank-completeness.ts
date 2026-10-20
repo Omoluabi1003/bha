@@ -1,0 +1,1 @@
+export function assertCompleteQuestionSet(actual:number,expected:number,setNumber:number){if(actual!==expected)throw new Error(`Question Set ${setNumber} is incomplete: ${actual}/${expected}.`);return true;}
