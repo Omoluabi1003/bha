@@ -1,0 +1,1 @@
+export const CBT_SET_ACCEPTANCE=['outer selector opens a complete set','set contains exact configured question count','all questions are distinct','incomplete sets are locked','inner navigator handles questions within set'] as const;
