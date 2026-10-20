@@ -1,0 +1,1 @@
+export const FINAL_SELECTOR_RULE='NUMBER = SET';
