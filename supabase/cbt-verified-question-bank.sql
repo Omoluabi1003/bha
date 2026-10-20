@@ -1,4 +1,5 @@
--- Student-facing CBT source of truth. Only academically approved candidates may be promoted here.
+-- Authoritative CBT source of truth. Only academically approved candidates may be promoted here.
+-- Students must never receive direct table access because this table contains answer keys and rationales.
 create table if not exists public.cbt_verified_questions (
   id uuid primary key,
   candidate_id uuid unique not null references public.cbt_question_candidates(id) on delete restrict,
@@ -21,9 +22,12 @@ create index if not exists cbt_verified_questions_exam_subject_idx on public.cbt
 alter table public.cbt_verified_questions enable row level security;
 
 drop policy if exists "verified questions authenticated read" on public.cbt_verified_questions;
+drop policy if exists "verified questions staff read" on public.cbt_verified_questions;
 drop policy if exists "verified questions proprietor manage" on public.cbt_verified_questions;
-create policy "verified questions authenticated read" on public.cbt_verified_questions for select
-using (auth.uid() is not null and active=true);
+
+-- Only trusted academic roles may inspect the underlying verified rows, including answer keys.
+create policy "verified questions staff read" on public.cbt_verified_questions for select
+using (public.current_role() in ('proprietor','staff'));
 create policy "verified questions proprietor manage" on public.cbt_verified_questions for all
 using (public.current_role()='proprietor') with check (public.current_role()='proprietor');
 
