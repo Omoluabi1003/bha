@@ -1,0 +1,1 @@
+export function assertCompleteSetInventory(bankSize:number,setNumber:number,questionsPerSet:number){const required=setNumber*questionsPerSet;if(bankSize<required)throw new Error(`Set ${setNumber} requires ${required} approved bank questions in total.`);return true;}
