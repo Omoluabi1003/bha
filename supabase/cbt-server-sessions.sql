@@ -15,10 +15,11 @@ language plpgsql security definer set search_path=public as $$
 declare sid uuid; ids uuid[];
 begin
  if auth.uid() is null then raise exception 'authentication required'; end if;
+ if length(trim(coalesce(p_exam,'')))<1 or length(trim(coalesce(p_subject,'')))<1 then raise exception 'exam and subject required'; end if;
  if p_mode not in('practice','simulation') or p_count<1 or p_count>60 then raise exception 'invalid session request'; end if;
- select array_agg(id) into ids from (select id from public.cbt_verified_questions where active=true and exam=p_exam and subject=p_subject order by random() limit p_count) q;
+ select array_agg(id) into ids from (select id from public.cbt_verified_questions where active=true and exam=trim(p_exam) and subject=trim(p_subject) order by random() limit p_count) q;
  if coalesce(array_length(ids,1),0)<>p_count then raise exception 'verified bank not ready'; end if;
- insert into public.cbt_exam_sessions(user_id,exam,subject,mode,question_ids,total) values(auth.uid(),p_exam,p_subject,p_mode,ids,p_count) returning id into sid;
+ insert into public.cbt_exam_sessions(user_id,exam,subject,mode,question_ids,total) values(auth.uid(),trim(p_exam),trim(p_subject),p_mode,ids,p_count) returning id into sid;
  return query select sid,q.id,q.topic,q.question_text,q.options,u.ord::integer from unnest(ids) with ordinality u(id,ord) join public.cbt_verified_questions q on q.id=u.id order by u.ord;
 end;$$;
 
@@ -27,11 +28,23 @@ returns table(score integer,total integer,unanswered integer)
 language plpgsql security definer set search_path=public as $$
 declare s public.cbt_exam_sessions; earned integer; missing integer;
 begin
+ if auth.uid() is null then raise exception 'authentication required'; end if;
+ if p_answers is null or jsonb_typeof(p_answers)<>'object' then raise exception 'answers must be an object'; end if;
  select * into s from public.cbt_exam_sessions where id=p_session_id and user_id=auth.uid() for update;
  if not found then raise exception 'session not found'; end if;
  if s.status<>'active' then raise exception 'session already closed'; end if;
- select count(*) filter(where (p_answers ? q.id::text) and (p_answers->>q.id::text)::integer=q.correct_option),
-        count(*) filter(where not(p_answers ? q.id::text))
+
+ -- Only session question IDs are considered. Values outside 0..3 or non-integer JSON
+ -- values are treated as unanswered instead of being cast unsafely.
+ select count(*) filter(where
+          p_answers ? q.id::text
+          and jsonb_typeof(p_answers->q.id::text)='number'
+          and (p_answers->q.id::text)::text ~ '^[0-3]$'
+          and ((p_answers->q.id::text)::text)::integer=q.correct_option),
+        count(*) filter(where
+          not(p_answers ? q.id::text)
+          or jsonb_typeof(p_answers->q.id::text)<>'number'
+          or not((p_answers->q.id::text)::text ~ '^[0-3]$'))
  into earned,missing from public.cbt_verified_questions q where q.id=any(s.question_ids);
  update public.cbt_exam_sessions set score=earned,submitted_at=now(),status='submitted' where id=s.id;
  return query select earned,s.total,missing;
