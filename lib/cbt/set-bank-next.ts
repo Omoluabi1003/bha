@@ -1,0 +1,1 @@
+export function nextSetRequirement(approved:number,questionsPerSet:number){const complete=Math.floor(approved/questionsPerSet);return {nextSetNumber:complete+1,requiredTotal:(complete+1)*questionsPerSet,additionalNeeded:questionsPerSet-(approved%questionsPerSet)};}
