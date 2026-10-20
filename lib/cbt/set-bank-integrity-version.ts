@@ -1,0 +1,1 @@
+export const CBT_BANK_INTEGRITY_VERSION='1.0.0';
