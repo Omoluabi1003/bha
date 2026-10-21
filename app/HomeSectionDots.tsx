@@ -1,5 +1,13 @@
 "use client";
-import {useEffect,useState} from "react";
+import Link from "next/link";
+import {useEffect,useRef,useState} from "react";
 import {usePathname} from "next/navigation";
-const sections=[{key:"home",selector:".akwaHero",label:"Welcome"},{key:"academics",selector:"#academics",label:"Academics"},{key:"admissions",selector:"#admissions",label:"Admissions"}] as const;
-export default function HomeSectionDots(){const pathname=usePathname();const[active,setActive]=useState("home");useEffect(()=>{if(pathname!=="/")return;const pairs=sections.map(section=>({section,node:document.querySelector(section.selector) as HTMLElement|null})).filter(x=>x.node);const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];const match=pairs.find(x=>x.node===visible?.target);if(match)setActive(match.section.key)},{rootMargin:"-28% 0px -48% 0px",threshold:[0,.2,.5,.8]});pairs.forEach(({node})=>node&&observer.observe(node));return()=>observer.disconnect()},[pathname]);if(pathname!=="/")return null;return <nav className="homeSectionDots" aria-label="Homepage sections">{sections.map(({key,selector,label})=><button key={key} type="button" className={active===key?"active":""} onClick={()=>document.querySelector(selector)?.scrollIntoView({behavior:"smooth",block:"start"})} aria-label={`Go to ${label}`} aria-current={active===key?"page":undefined}><span className="dot"/><span className="dotLabel">{label}</span></button>)}</nav>}
+const pages=[
+  {href:"/",label:"Home"},
+  {href:"/academics",label:"Academics"},
+  {href:"/cbt",label:"CBT Practice"},
+  {href:"/admissions",label:"Admissions"},
+  {href:"/digital-campus",label:"Digital Campus"},
+  {href:"/portal/fees",label:"School Fees"}
+];
+export default function HomeSectionDots(){const pathname=usePathname();const[open,setOpen]=useState(false);const ref=useRef<HTMLElement>(null);useEffect(()=>{const close=(e:PointerEvent)=>{if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false)};document.addEventListener("pointerdown",close);return()=>document.removeEventListener("pointerdown",close)},[]);return <nav ref={ref} className={`bhaPageRail${open?" open":""}`} aria-label="BHA page navigation"><button className="bhaPageRailTrigger" type="button" aria-expanded={open} aria-label={open?"Close BHA page menu":"Open BHA page menu"} onClick={()=>setOpen(v=>!v)}><span/><span/><span/></button><div className="bhaPageRailMenu" aria-hidden={!open}>{pages.map(page=><Link key={page.href} href={page.href} className={pathname===page.href?"active":""} onClick={()=>setOpen(false)}>{page.label}</Link>)}</div></nav>}
