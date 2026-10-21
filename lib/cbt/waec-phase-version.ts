@@ -1,0 +1,1 @@
+export const WAEC_COMPLETION_PHASE_VERSION=1;
