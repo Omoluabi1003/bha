@@ -17,7 +17,9 @@ export function validateQuestion(q:PracticeQuestion,existing:PracticeQuestion[]=
   const options=(q.o??[]).map(normalized);
   if(new Set(options).size!==options.length)reasons.push('duplicate options');
   if(options.some(x=>!x))reasons.push('empty option');
-  const near=existing.find(x=>x.id!==q.id&&questionSimilarity(x.q,q.q)>=0.82);
+  // Compare likely duplicates only inside the same subject/topic. The old 0.82
+  // whole-bank threshold incorrectly removed distinct short Mathematics items.
+  const near=existing.find(x=>x.id!==q.id&&x.subject===q.subject&&normalized(x.topic)===normalized(q.topic)&&questionSimilarity(x.q,q.q)>=0.90);
   if(near)reasons.push(`near-duplicate of ${near.id}`);
   return{valid:reasons.length===0,score:Math.max(0,100-reasons.length*20),reasons};
 }
