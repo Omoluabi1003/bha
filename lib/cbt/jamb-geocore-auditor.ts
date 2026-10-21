@@ -15,7 +15,7 @@ export function auditQuestionForGeoCore(question:PracticeQuestion,bank:PracticeQ
  const manifest=manifestFor(question.subject);
  if(!manifest)return {questionId:question.id,subject:question.subject,status:'rejected',reasons:['Subject is not in the canonical JAMB UTME manifest.']};
  const structural=validateQuestion(question,bank.filter(q=>q.id!==question.id));
- if(!structural.ok)return {questionId:question.id,subject:question.subject,status:'rejected',reasons:structural.reasons};
+ if(!structural.valid)return {questionId:question.id,subject:question.subject,status:'rejected',reasons:structural.reasons};
  const ranked=manifest.domains.map(d=>({d,score:domainScore(question,d.name)})).sort((a,b)=>b.score-a.score);
  if(!ranked[0]||ranked[0].score===0)return {questionId:question.id,subject:question.subject,status:'manual-review',reasons:['No syllabus domain can be assigned safely from question/topic text. Human academic mapping is required.']};
  return {questionId:question.id,subject:question.subject,status:'mapped',domain:ranked[0].d.name,reasons:['Structurally valid and mapped to a current GeoCore syllabus domain. Academic answer verification is still required before certification.']};
