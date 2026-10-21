@@ -1,0 +1,1 @@
+export const WAEC_ACADEMIC_REVIEW_POLICY={requireSyllabusMapping:true,requireAnswerVerification:true,requireNamedReviewer:true,requireReviewTimestamp:true,requirePrescribedMaterialEvidenceWhenApplicable:true} as const;
