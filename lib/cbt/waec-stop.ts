@@ -1,0 +1,1 @@
+export const WAEC_STRUCTURAL_IMPLEMENTATION_SCOPE_CLOSED=true as const;
