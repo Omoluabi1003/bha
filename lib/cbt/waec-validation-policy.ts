@@ -1,0 +1,1 @@
+export const WAEC_VALIDATION_POLICY={doNotLowerDuplicateThresholdToForceReadiness:true,fixQuestionSourceInstead:true,requireFourOptions:true,requireValidAnswerIndex:true,requireSyllabusTopic:true} as const;
