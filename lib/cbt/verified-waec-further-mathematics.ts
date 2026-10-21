@@ -1,0 +1,47 @@
+import type { PracticeQuestion } from './nigerian-subjects';
+
+type Row = [string,string,string[],number];
+const rows: Row[] = [
+['Sets','If A={1,2,3,4} and B={3,4,5}, find A∩B.',['{1,2}','{3,4}','{4,5}','{1,5}'],1],
+['Surds','Rationalize 3/√3.',['√3','3√3','1/√3','9'],0],
+['Indices','Solve 2^(x+1)=16.',['2','3','4','5'],1],
+['Logarithms','If log₂x=5, find x.',['10','16','25','32'],3],
+['Polynomials','If p(x)=x³-4x, find p(2).',['0','4','8','12'],0],
+['Quadratics','For x²-7x+10=0, the sum of the roots is _____.',['-10','-7','7','10'],2],
+['Functions','If f(x)=x²+1, find f(-3).',['-8','8','10','12'],2],
+['Functions','If f(x)=2x-1 and g(x)=x+3, find f(g(2)).',['7','9','11','13'],1],
+['Sequences','Find the 6th term of the GP 2,6,18,...',['162','243','486','729'],2],
+['Series','Find the sum of the first 10 terms of 2,5,8,...',['145','150','155','160'],2],
+['Binomial Theorem','Find the coefficient of x² in (1+x)⁴.',['4','6','8','12'],1],
+['Permutation','How many arrangements are possible for 4 distinct objects?',['8','12','16','24'],3],
+['Combination','Evaluate ⁵C₂.',['5','10','15','20'],1],
+['Matrices','Find the determinant of [[3,2],[1,4]].',['8','10','12','14'],1],
+['Matrices','If A is a 2×3 matrix and B is a 3×2 matrix, the order of AB is _____.',['2×2','2×3','3×2','3×3'],0],
+['Coordinate Geometry','Find the distance between (0,0) and (6,8).',['8','10','12','14'],1],
+['Coordinate Geometry','Find the equation slope of a line perpendicular to a line of slope 2.',['-2','-1/2','1/2','2'],1],
+['Trigonometry','Evaluate sin 30° cos 60°.',['1/4','1/2','√3/2','1'],0],
+['Trigonometry','If tan θ=1 and 0°<θ<90°, θ equals _____.',['30°','45°','60°','90°'],1],
+['Trigonometry','Using sin²θ+cos²θ=1, find cos θ if sin θ=5/13 and θ is acute.',['5/12','12/13','13/12','8/13'],1],
+['Vectors','Find the magnitude of vector 5i+12j.',['7','13','17','25'],1],
+['Vectors','If a=2i+3j and b=i-j, find a+b.',['i+2j','3i+2j','3i+4j','i+4j'],1],
+['Differentiation','Differentiate y=x³-2x²+5.',['3x²-4x','3x²-2x','x²-4x','3x-4'],0],
+['Differentiation','If y=sin x, dy/dx is _____.',['-sin x','cos x','tan x','sec²x'],1],
+['Differentiation','Find the stationary x-value of y=x²-6x+4.',['2','3','4','6'],1],
+['Integration','Evaluate ∫4x³ dx.',['x⁴+C','4x⁴+C','12x²+C','2x⁴+C'],0],
+['Integration','Evaluate ∫₀² x dx.',['1','2','3','4'],1],
+['Mechanics','A particle starts from rest with acceleration 3 m/s². Find its speed after 4 s.',['7 m/s','12 m/s','16 m/s','24 m/s'],1],
+['Mechanics','A body moving at 10 m/s for 6 s at constant speed covers _____.',['16 m','40 m','60 m','100 m'],2],
+['Mechanics','A 5 kg mass acted on by a resultant force of 20 N has acceleration _____.',['2 m/s²','4 m/s²','5 m/s²','10 m/s²'],1],
+['Statistics','Find the variance of 2,2,4,4 using population variance.',['1','2','3','4'],0],
+['Statistics','The mean of x,4,6 is 5. Find x.',['3','4','5','6'],2],
+['Probability','Two fair coins are tossed. P(two heads)=_____.',['1/2','1/3','1/4','3/4'],2],
+['Probability','If P(A)=0.4, then P(A′)=_____.',['0.4','0.5','0.6','1.4'],2],
+['Linear Programming','The feasible region in linear programming is the region satisfying _____.',['only the objective function','all stated constraints','no inequalities','only one axis'],1],
+['Complex Numbers','Simplify i².',['-1','0','1','2i'],0],
+['Complex Numbers','If z=3+4i, |z| equals _____.',['3','4','5','7'],2],
+['Binary Operations','If a*b=a+b-2, find 5*4.',['5','7','9','11'],1],
+['Modular Arithmetic','Find 17 mod 5.',['1','2','3','4'],1],
+['Geometry','Convert π/3 radians to degrees.',['30°','45°','60°','90°'],2]
+];
+
+export const waecFurtherMathematicsBank: PracticeQuestion[] = rows.map((r,i)=>({id:`waec-further-math-${i+1}`,subject:'Further Mathematics',topic:r[0],q:r[1],o:r[2],a:r[3]}));
