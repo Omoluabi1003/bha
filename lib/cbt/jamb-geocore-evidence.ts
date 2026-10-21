@@ -47,6 +47,9 @@ export function metadataFromEvidence(evidence:ReviewEvidence):GeoCoreMetadata{
     reviewer:evidence.reviewer,
     answerVerified:evidence.answerVerified,
     syllabusVerified:evidence.syllabusVerified,
+    computationVerified:evidence.computationVerified,
+    languageVerified:evidence.languageVerified,
+    prescribedMaterialVerified:evidence.prescribedMaterialVerified,
     notes:evidence.notes
   };
 }
