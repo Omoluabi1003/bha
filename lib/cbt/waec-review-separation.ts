@@ -1,0 +1,1 @@
+export const WAEC_STRUCTURAL_AND_ACADEMIC_REVIEW_ARE_SEPARATE=true as const;
