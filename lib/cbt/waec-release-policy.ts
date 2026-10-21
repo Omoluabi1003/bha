@@ -1,0 +1,1 @@
+export const WAEC_RELEASE_POLICY={requireCurrentCatalog:true,requireFullAcceptedBank:true,requireUniqueQuestionIds:true,academicCertificationIsSeparate:true} as const;
