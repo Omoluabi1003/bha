@@ -1,0 +1,1 @@
+export const WAEC_QUESTION_SOURCE_POLICY={originalPreparationMaterial:true,officialPastPaperCopying:false,requireAcademicReviewBeforeCertification:true} as const;
