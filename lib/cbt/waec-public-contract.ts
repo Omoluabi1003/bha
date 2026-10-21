@@ -1,0 +1,1 @@
+export const WAEC_PUBLIC_CONTRACT={pickerShowsRegisteredSubjects:true,componentsAreNested:true,activeCardMeansStructurallyReady:true,activeCardDoesNotMeanWaecEndorsed:true} as const;
