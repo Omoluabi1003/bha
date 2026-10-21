@@ -16,6 +16,7 @@ export type GeoCoreMetadata={
   status:GeoCoreStatus;
   answerVerified?:boolean;
   syllabusVerified?:boolean;
+  computationVerified?:boolean;
   languageVerified?:boolean;
   prescribedMaterialVerified?:boolean;
   reviewedAt?:string;
@@ -33,7 +34,11 @@ export type GeoCoreQuestion=PracticeQuestion&{geocore?:GeoCoreMetadata};
 
 export function geocoreReady(question:GeoCoreQuestion){
   const g=question.geocore;
-  return Boolean(g&&g.sourceAuthority==='JAMB IBASS'&&g.syllabusVersion&&g.syllabusTopic&&g.syllabusObjective&&g.sourceUrl&&g.status==='certified'&&g.answerVerified===true&&g.syllabusVerified===true&&g.reviewer&&g.reviewedAt);
+  if(!(g&&g.sourceAuthority==='JAMB IBASS'&&g.syllabusVersion&&g.syllabusTopic&&g.syllabusObjective&&g.sourceUrl&&g.status==='certified'&&g.answerVerified===true&&g.syllabusVerified===true&&g.reviewer&&g.reviewedAt))return false;
+  if(['Mathematics','Physics','Chemistry'].includes(question.subject)&&g.computationVerified!==true)return false;
+  if(['Igbo','Yoruba','Hausa','Arabic','French'].includes(question.subject)&&g.languageVerified!==true)return false;
+  if(question.subject==='Literature-in-English'&&g.prescribedMaterialVerified!==true)return false;
+  return true;
 }
 
 export function auditGeoCoreBank(subject:string,questions:GeoCoreQuestion[]){
