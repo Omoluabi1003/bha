@@ -1,0 +1,1 @@
+export const WAEC_PARENT_SUBJECT_POLICY={oralAsStandaloneCard:false,practicalAsStandaloneCard:false,performanceAsStandaloneCard:false,componentsRemainInsideParentSubject:true} as const;
