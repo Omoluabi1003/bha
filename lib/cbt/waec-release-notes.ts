@@ -1,0 +1,1 @@
+export const WAEC_RELEASE_NOTES=['2026/2027 catalog integrity','parent-subject component policy','validator-safe vocational bank generation','full-catalog readiness audit','question ID collision audit','separate academic certification evidence'] as const;
