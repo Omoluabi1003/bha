@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./mobile-fix.css";
+import "./home-section-dots.css";
+import HomeSectionDots from "./HomeSectionDots";
 
 const siteUrl = "https://bha-nine.vercel.app";
 const officialBhaAsset = "https://raw.githubusercontent.com/Omoluabi1003/bha/main/9DF002EA-EE3F-4507-924B-82B021A3F925.png";
@@ -32,5 +34,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><head><meta property="og:image" content={officialBhaAsset}/><meta property="og:image:secure_url" content={officialBhaAsset}/><meta property="og:image:type" content="image/png"/><meta name="twitter:image" content={officialBhaAsset}/></head><body>{children}</body></html>;
+  return <html lang="en"><head><meta property="og:image" content={officialBhaAsset}/><meta property="og:image:secure_url" content={officialBhaAsset}/><meta property="og:image:type" content="image/png"/><meta name="twitter:image" content={officialBhaAsset}/></head><body><HomeSectionDots/>{children}</body></html>;
 }
