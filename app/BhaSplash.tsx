@@ -1,14 +1,15 @@
 "use client";
-import {useEffect,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import "./bha-splash.css";
 
 const officialBhaCrest="https://raw.githubusercontent.com/Omoluabi1003/bha/main/9DF002EA-EE3F-4507-924B-82B021A3F925.png";
 export default function BhaSplash(){
- const [visible,setVisible]=useState(false);const [leaving,setLeaving]=useState(false);
+ const [visible,setVisible]=useState(false);const [leaving,setLeaving]=useState(false);const rootRef=useRef<HTMLDivElement|null>(null);
  useEffect(()=>{if(sessionStorage.getItem("bha-splash-seen"))return;setVisible(true);const exit=setTimeout(()=>setLeaving(true),7200);const done=setTimeout(()=>{setVisible(false);sessionStorage.setItem("bha-splash-seen","1")},8000);return()=>{clearTimeout(exit);clearTimeout(done)}},[]);
+ useEffect(()=>{if(!visible||!rootRef.current)return;let raf=0;const started=performance.now();const tick=(now:number)=>{const root=rootRef.current;if(!root)return;const t=(now-started)/1000;root.style.setProperty('--splash-t',String(t));root.style.setProperty('--splash-orbit-one',`${t*48}deg`);root.style.setProperty('--splash-orbit-two',`${-t*62}deg`);root.style.setProperty('--splash-float',`${Math.sin(t*2.15)*7}px`);root.style.setProperty('--splash-pulse',String(.92+((Math.sin(t*2.4)+1)/2)*.16));root.style.setProperty('--splash-drift-x',`${(t*18)%82}px`);root.style.setProperty('--splash-drift-y',`${(t*12)%82}px`);root.style.setProperty('--splash-ghost-rotate',`${-3+Math.min(t/8,1)*6}deg`);root.style.setProperty('--splash-ghost-scale',String(.9+Math.min(t/8,1)*.2));root.style.setProperty('--splash-beam-x',`${-45+Math.min(Math.max((t-1.1)/5.8,0),1)*165}%`);raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf)},[visible]);
  if(!visible)return null;
  const enter=()=>{setLeaving(true);setTimeout(()=>{setVisible(false);sessionStorage.setItem("bha-splash-seen","1")},500)};
- return <div className={`bhaSplash ${leaving?"bhaSplashExit":""}`} role="dialog" aria-label="Welcome to Best Home Academy">
+ return <div ref={rootRef} className={`bhaSplash ${leaving?"bhaSplashExit":""}`} role="dialog" aria-label="Welcome to Best Home Academy">
    <div className="bhaSplashGhostCrest" aria-hidden="true"><img src={officialBhaCrest} alt=""/></div>
    <div className="bhaSplashOrbit bhaSplashOrbitOne" aria-hidden="true"/><div className="bhaSplashOrbit bhaSplashOrbitTwo" aria-hidden="true"/>
    <div className="bhaSplashGlow"/><div className="bhaSplashPattern"/><div className="bhaSplashGoldBeam" aria-hidden="true"/>
