@@ -10,9 +10,10 @@ export default function BhaSplash(){
  const enter=()=>{setLeaving(true);setTimeout(()=>{setVisible(false);sessionStorage.setItem("bha-splash-seen","1")},500)};
  return <div className={`bhaSplash ${leaving?"bhaSplashExit":""}`} role="dialog" aria-label="Welcome to Best Home Academy">
    <div className="bhaSplashGhostCrest" aria-hidden="true"><img src={officialBhaCrest} alt=""/></div>
-   <div className="bhaSplashGlow"/><div className="bhaSplashPattern"/>
+   <div className="bhaSplashOrbit bhaSplashOrbitOne" aria-hidden="true"/><div className="bhaSplashOrbit bhaSplashOrbitTwo" aria-hidden="true"/>
+   <div className="bhaSplashGlow"/><div className="bhaSplashPattern"/><div className="bhaSplashGoldBeam" aria-hidden="true"/>
    <main className="bhaSplashInner">
-    <div className="bhaSplashCrest"><span className="bhaSplashSweep"/><img src={officialBhaCrest} alt="Best Home Academy official crest" fetchPriority="high" decoding="sync"/></div>
+    <div className="bhaSplashCrest"><span className="bhaSplashSweep"/><span className="bhaSplashCrestHalo" aria-hidden="true"/><img src={officialBhaCrest} alt="Best Home Academy official crest" fetchPriority="high" decoding="sync"/></div>
     <p className="bhaSplashKicker">EKET · AKWA IBOM STATE</p>
     <h1>BEST HOME<br/><span>ACADEMY</span></h1>
     <div className="bhaSplashRule"/>
