@@ -1,5 +1,19 @@
 # Best Home Academy (BHA)
 
+## Project at a glance
+
+**Category:** Best Home Academy school platform  
+**Purpose:** Support academic discovery and the evolving digital campus for students, parents, staff and school administrators  
+**Audience:** Users, contributors, implementers and project reviewers  
+**Source repository:** https://github.com/Omoluabi1003/bha
+
+**Readiness boundary:** School identity, payment and examination functions must be assessed individually for production readiness.
+
+Continue below for the existing documentation, including setup, architecture or deployment instructions where provided. Planned capabilities must be independently validated before being described as live.
+
+---
+
+
 > **Excellence Is Doing Ordinary Things Extraordinarily Well.**
 
 Best Home Academy is a mobile-first academic and digital-campus platform for focused secondary-school and external-examination preparation in Eket, Akwa Ibom State, Nigeria.
